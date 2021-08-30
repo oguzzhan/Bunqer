@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,6 +26,29 @@ class NetworkModule {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         return interceptor
+    }
+
+    @Provides
+    fun provideMandatoryHeaderInterceptor(): Interceptor {
+        return Interceptor { chain ->
+            val url = chain.request().url.toString()
+            val request = chain.request().newBuilder()
+                .addHeader(
+                    "Cache-Control", "no-cache"
+                )
+                .addHeader(
+                    "User-Agent",
+                    "bunqerOzzy"
+                )
+            if (url.contains("installation").not()) {
+                request.addHeader(
+                    "X-Bunq-Client-Authentication",
+                    ""
+                )
+            }
+
+            chain.proceed(request.build())
+        }
     }
 
     @Provides
