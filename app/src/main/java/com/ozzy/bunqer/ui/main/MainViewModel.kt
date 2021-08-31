@@ -121,7 +121,12 @@ class MainViewModel @Inject constructor(
                             token
                         )
                     }
-                    Log.d("test", it.response?.getToken() ?: "")
+                    bunqPreferences.putString(
+                        Constants.Preferences.USER_ID,
+                        it.response?.getUserId() ?: ""
+                    )
+
+                    getMonetaryAccounts()
                 }
                 is BunqResult.Error -> {
                     Log.d("StartSession", "Error")
@@ -131,6 +136,29 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun getMonetaryAccounts() {
+        apiRepository.getMonetaryAccounts(bunqPreferences.getString(Constants.Preferences.USER_ID))
+            .collect {
+                when (it) {
+                    is BunqResult.BunqError -> {
+                        Log.d("GetMonetaryAccount", "Error")
+                    }
+                    is BunqResult.BunqResponse -> {
+                        bunqPreferences.putString(
+                            Constants.Preferences.MONETARY_ACCOUNT_ID,
+                            it.response?.getFirstAccountID() ?: ""
+                        )
+                    }
+                    is BunqResult.Error -> {
+                        Log.d("GetMonetaryAccount", "Error")
+                    }
+                    is BunqResult.Loading -> {
+                        Log.d("GetMonetaryAccount", "Loading")
+                    }
+                }
+            }
     }
 
 }

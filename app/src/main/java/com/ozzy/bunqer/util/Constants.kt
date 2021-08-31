@@ -10,6 +10,8 @@ object Constants {
         const val PUBLIC_KEY = "PUBLIC_KEY"
         const val API_KEY = "API_KEY"
         const val SESSION_TOKEN = "SESSION_TOKEN"
+        const val USER_ID = "USER_ID"
+        const val MONETARY_ACCOUNT_ID = "MONETARY_ACCOUNT_ID"
     }
 
     object Network {

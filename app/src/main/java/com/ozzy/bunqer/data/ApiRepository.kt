@@ -4,10 +4,7 @@ import com.ozzy.bunqer.data.model.BunqResult
 import com.ozzy.bunqer.data.model.request.InstallationRequest
 import com.ozzy.bunqer.data.model.request.RegisterDeviceRequest
 import com.ozzy.bunqer.data.model.request.SessionRequest
-import com.ozzy.bunqer.data.model.response.ApiKeyResponse
-import com.ozzy.bunqer.data.model.response.InstallationResponse
-import com.ozzy.bunqer.data.model.response.RegisterDeviceResponse
-import com.ozzy.bunqer.data.model.response.SessionResponse
+import com.ozzy.bunqer.data.model.response.*
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import javax.inject.Inject
@@ -46,6 +43,14 @@ class ApiRepository @Inject constructor(private val dataSource: BunqerDataSource
         return object : NetworkBoundRepository<SessionResponse>() {
             override suspend fun fetchFromRemote(): Response<SessionResponse> {
                 return dataSource.startSession(requestBody)
+            }
+        }.asFlow()
+    }
+
+    fun getMonetaryAccounts(userId: String): Flow<BunqResult<MonetaryAccountResponse?>> {
+        return object : NetworkBoundRepository<MonetaryAccountResponse>() {
+            override suspend fun fetchFromRemote(): Response<MonetaryAccountResponse> {
+                return dataSource.getMonetaryAccounts(userId)
             }
         }.asFlow()
     }

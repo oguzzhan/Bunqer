@@ -11,7 +11,11 @@ data class SessionResponse(
     val response: List<Response>? = null
 ) {
     fun getToken(): String {
-        return response?.filter { it.token != null }?.firstOrNull()?.token?.token ?: ""
+        return response?.firstOrNull { it.token != null }?.token?.token ?: ""
+    }
+
+    fun getUserId(): String {
+        return response?.firstOrNull { it.userPerson != null }?.userPerson?.id.toString()
     }
 }
 
