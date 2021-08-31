@@ -3,7 +3,6 @@ package com.ozzy.bunqer.data
 import android.util.Log
 import androidx.annotation.MainThread
 import com.google.gson.Gson
-import com.ozzy.bunqer.data.model.BunqErrorModel
 import com.ozzy.bunqer.data.model.BunqErrorResponse
 import com.ozzy.bunqer.data.model.BunqResult
 import kotlinx.coroutines.flow.catch
@@ -23,11 +22,13 @@ abstract class NetworkBoundRepository<RESULT> {
         val remotePosts = apiResponse.body()
 
         if (apiResponse.isSuccessful && remotePosts != null) {
-            if (apiResponse.body() is BunqResult.BunqResponse<*> ) {
-                emit(BunqResult.success(apiResponse.body()))
-            }
-        } else if(apiResponse.errorBody() != null) {
-            val errorResponse = Gson().fromJson(apiResponse.errorBody()!!.charStream(), BunqErrorResponse::class.java)
+            emit(BunqResult.success(apiResponse.body()))
+
+        } else if (apiResponse.errorBody() != null) {
+            val errorResponse = Gson().fromJson(
+                apiResponse.errorBody()!!.charStream(),
+                BunqErrorResponse::class.java
+            )
 
             emit(BunqResult.bunqError(errorResponse))
         }

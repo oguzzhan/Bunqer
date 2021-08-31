@@ -7,7 +7,18 @@ import com.google.gson.annotations.SerializedName
  * Created by Oğuzhan Karacan on 30.08.2021.
  */
 
-data class InstallationResponse(@SerializedName("Response") val itemList: ArrayList<InstallationResponseItem>)
+
+data class InstallationResponse(@SerializedName("Response") val itemList: ArrayList<InstallationResponseItem>) {
+    fun getToken(): String? {
+        var token: String? = ""
+        itemList.forEach { item ->
+            if (item.token != null) {
+                token = item.token?.token
+            }
+        }
+        return token
+    }
+}
 
 data class InstallationResponseItem(
     @SerializedName("Id")
@@ -16,11 +27,6 @@ data class InstallationResponseItem(
     var token: Token? = null,
     @SerializedName("ServerPublicKey")
     var serverPublicKey: ServerPublicKey? = null
-)
-
-data class Id(
-    @SerializedName("id")
-    var id: Int? = null
 )
 
 data class Token(

@@ -1,11 +1,14 @@
 package com.ozzy.bunqer.di
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.ozzy.bunqer.data.BunqerService
 import com.ozzy.bunqer.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -29,7 +32,7 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideMandatoryHeaderInterceptor(): Interceptor {
+    fun provideMandatoryHeaderInterceptor(bunqPreferences: BunqPreferences): Interceptor {
         return Interceptor { chain ->
             val url = chain.request().url.toString()
             val request = chain.request().newBuilder()
@@ -40,26 +43,34 @@ class NetworkModule {
                     "User-Agent",
                     "bunqerOzzy"
                 )
-            if (url.contains("installation").not()) {
+            if (url.contains("installation").not() && url.contains("sandbox-user-person").not()) {
                 request.addHeader(
                     "X-Bunq-Client-Authentication",
-                    ""
+                    bunqPreferences.getString(Constants.Preferences.INSTALLATION_TOKEN)
                 )
             }
-
             chain.proceed(request.build())
         }
     }
 
     @Provides
+    fun provideChuck(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor.Builder(context).build()
+    }
+
+    @Provides
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
+        mandatoryHeaderInterceptor: Interceptor,
+        chuck: ChuckerInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .readTimeout(60, TimeUnit.SECONDS)
             .connectTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(mandatoryHeaderInterceptor)
+            .addInterceptor(chuck)
             .build()
 
     }
