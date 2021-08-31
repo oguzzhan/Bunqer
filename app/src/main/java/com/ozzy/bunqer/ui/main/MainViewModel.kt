@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.ozzy.bunqer.data.ApiRepository
 import com.ozzy.bunqer.data.model.BunqResult
 import com.ozzy.bunqer.data.model.request.RegisterDeviceRequest
+import com.ozzy.bunqer.data.model.request.SessionRequest
 import com.ozzy.bunqer.di.BunqPreferences
 import com.ozzy.bunqer.util.Constants
+import com.ozzy.bunqer.util.extension.generatePublicKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -48,28 +50,30 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    suspend fun installation() {
-        apiRepository.installation().collect {
+    private suspend fun installation() {
+        val key = generatePublicKey()
+        bunqPreferences.putString(Constants.Preferences.PUBLIC_KEY, key)
+        apiRepository.installation(key).collect {
             when (it) {
                 is BunqResult.BunqError -> {
-                    Log.d("zaaa", "text")
+                    Log.d("test", "text")
 
                 }
                 is BunqResult.BunqResponse -> {
                     it.response?.getToken()?.let { token ->
                         bunqPreferences.putString(
-                            Constants.Preferences.INSTALLATION_TOKEN,
+                            Constants.Preferences.SESSION_TOKEN,
                             token
                         )
                         registerDevice()
                     }
                 }
                 is BunqResult.Error -> {
-                    Log.d("zaaa", "text")
+                    Log.d("test", "text")
 
                 }
                 is BunqResult.Loading -> {
-                    Log.d("zaaa", "text")
+                    Log.d("test", "text")
 
                 }
             }
@@ -85,16 +89,45 @@ class MainViewModel @Inject constructor(
         apiRepository.registerDevice(requestBody).collect {
             when (it) {
                 is BunqResult.BunqError -> {
-                    Log.d("zaaa", "text")
+                    Log.d("test", "text")
                 }
                 is BunqResult.BunqResponse -> {
-                    Log.d("zaaa", "text")
+                    startSession()
                 }
                 is BunqResult.Error -> {
-                    Log.d("zaaa", "text")
+                    Log.d("test", "text")
                 }
                 is BunqResult.Loading -> {
-                    Log.d("zaaa", "text")
+                    Log.d("test", "text")
+                }
+            }
+        }
+    }
+
+    private suspend fun startSession() {
+        val requestBody = SessionRequest(
+            secret = bunqPreferences.getString(Constants.Preferences.API_KEY)
+        )
+
+        apiRepository.startSession(requestBody).collect {
+            when (it) {
+                is BunqResult.BunqError -> {
+                    Log.d("StartSession", "Error")
+                }
+                is BunqResult.BunqResponse -> {
+                    it.response?.getToken()?.let { token ->
+                        bunqPreferences.putString(
+                            Constants.Preferences.SESSION_TOKEN,
+                            token
+                        )
+                    }
+                    Log.d("test", it.response?.getToken() ?: "")
+                }
+                is BunqResult.Error -> {
+                    Log.d("StartSession", "Error")
+                }
+                is BunqResult.Loading -> {
+                    Log.d("StartSession", "Loading")
                 }
             }
         }

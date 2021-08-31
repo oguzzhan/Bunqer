@@ -2,6 +2,7 @@ package com.ozzy.bunqer.data
 
 import com.ozzy.bunqer.data.model.request.InstallationRequest
 import com.ozzy.bunqer.data.model.request.RegisterDeviceRequest
+import com.ozzy.bunqer.data.model.request.SessionRequest
 import javax.inject.Inject
 
 /**
@@ -15,4 +16,7 @@ class BunqerDataSource @Inject constructor(private val bunqerService: BunqerServ
 
     suspend fun registerDevice(requestBody: RegisterDeviceRequest) =
         bunqerService.registerDevice(requestBody)
+
+    suspend fun startSession(requestBody: SessionRequest) =
+        bunqerService.startSession(requestBody)
 }

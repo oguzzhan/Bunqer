@@ -5,6 +5,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.ozzy.bunqer.data.BunqerService
 import com.ozzy.bunqer.util.Constants
+import com.ozzy.bunqer.util.extension.signedString
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,7 +33,9 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideMandatoryHeaderInterceptor(bunqPreferences: BunqPreferences): Interceptor {
+    fun provideMandatoryHeaderInterceptor(
+        bunqPreferences: BunqPreferences
+    ): Interceptor {
         return Interceptor { chain ->
             val url = chain.request().url.toString()
             val request = chain.request().newBuilder()
@@ -43,10 +46,14 @@ class NetworkModule {
                     "User-Agent",
                     "bunqerOzzy"
                 )
+                .addHeader(
+                    "X-Bunq-Client-Signature",
+                    chain.request().body?.signedString() ?: ""
+                )
             if (url.contains("installation").not() && url.contains("sandbox-user-person").not()) {
                 request.addHeader(
                     "X-Bunq-Client-Authentication",
-                    bunqPreferences.getString(Constants.Preferences.INSTALLATION_TOKEN)
+                    bunqPreferences.getString(Constants.Preferences.SESSION_TOKEN)
                 )
             }
             chain.proceed(request.build())

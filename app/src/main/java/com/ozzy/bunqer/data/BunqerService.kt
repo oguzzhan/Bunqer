@@ -2,9 +2,11 @@ package com.ozzy.bunqer.data
 
 import com.ozzy.bunqer.data.model.request.InstallationRequest
 import com.ozzy.bunqer.data.model.request.RegisterDeviceRequest
+import com.ozzy.bunqer.data.model.request.SessionRequest
 import com.ozzy.bunqer.data.model.response.ApiKeyResponse
 import com.ozzy.bunqer.data.model.response.InstallationResponse
 import com.ozzy.bunqer.data.model.response.RegisterDeviceResponse
+import com.ozzy.bunqer.data.model.response.SessionResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -22,4 +24,7 @@ interface BunqerService {
 
     @POST("device-server")
     suspend fun registerDevice(@Body requestBody: RegisterDeviceRequest): Response<RegisterDeviceResponse>
+
+    @POST("session-server")
+    suspend fun startSession(@Body requestBody: SessionRequest): Response<SessionResponse>
 }

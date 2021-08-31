@@ -7,8 +7,9 @@ object Constants {
     object Preferences {
         const val PREF_NAME = "bunqer-prefs"
 
+        const val PUBLIC_KEY = "PUBLIC_KEY"
         const val API_KEY = "API_KEY"
-        const val INSTALLATION_TOKEN = "INSTALLATION_TOKEN"
+        const val SESSION_TOKEN = "SESSION_TOKEN"
     }
 
     object Network {
