@@ -29,7 +29,7 @@ class PaymentViewModel @Inject constructor(
     private val bunqerService: BunqerService
 ) : ViewModel() {
 
-    fun callSugarDaddy() {
+    fun callSugarDaddy(onSuccess: () -> Unit) {
         val requestInquiryRequest = RequestInquiryRequest(
             amountInquired = AmountInquired(
                 value = "100",
@@ -56,7 +56,7 @@ class PaymentViewModel @Inject constructor(
                         Log.d("RequestMoney", "Error")
                     }
                     is BunqResult.BunqResponse -> {
-                        Log.d("RequestMoney", "Error")
+                        onSuccess()
                     }
                     is BunqResult.Error -> {
                         Log.d("RequestMoney", "Error")

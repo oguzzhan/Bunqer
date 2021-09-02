@@ -65,7 +65,9 @@ fun PaymentList(
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     SugarDaddyCaller {
-                        viewModel.callSugarDaddy()
+                        viewModel.callSugarDaddy() {
+                            payments.refresh()
+                        }
                     }
                     Button({ payments.refresh() }) {
                         Text("Refresh")
