@@ -1,6 +1,7 @@
 package com.ozzy.bunqer.ui.main
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ozzy.bunqer.data.ApiRepository
@@ -24,59 +25,72 @@ class MainViewModel @Inject constructor(
     private val bunqPreferences: BunqPreferences
 ) : ViewModel() {
 
+    val shouldFetchList = MutableLiveData<Boolean>().apply { value = false }
+
     fun createUser() {
-        viewModelScope.launch {
-            apiRepository.createUser().collect {
-                when (it) {
-                    is BunqResult.BunqError -> {
+        if (bunqPreferences.getString(Constants.Preferences.API_KEY).isEmpty()) {
+            viewModelScope.launch {
+                apiRepository.createUser().collect {
+                    when (it) {
+                        is BunqResult.BunqError -> {
 
-                    }
-                    is BunqResult.BunqResponse -> {
-                        Log.d("apiKey", it.response?.getApiKey() ?: "")
-                        bunqPreferences.putString(
-                            Constants.Preferences.API_KEY,
-                            it.response?.getApiKey() ?: ""
-                        )
-                        installation()
-                    }
-                    is BunqResult.Error -> {
+                        }
+                        is BunqResult.BunqResponse -> {
+                            Log.d("apiKey", it.response?.getApiKey() ?: "")
+                            bunqPreferences.putString(
+                                Constants.Preferences.API_KEY,
+                                it.response?.getApiKey() ?: ""
+                            )
+                            installation()
+                        }
+                        is BunqResult.Error -> {
 
-                    }
-                    is BunqResult.Loading -> {
+                        }
+                        is BunqResult.Loading -> {
 
+                        }
                     }
                 }
             }
+        } else {
+            viewModelScope.launch {
+                installation()
+            }
         }
+
     }
 
     private suspend fun installation() {
-        val key = generatePublicKey()
-        bunqPreferences.putString(Constants.Preferences.PUBLIC_KEY, key)
-        apiRepository.installation(key).collect {
-            when (it) {
-                is BunqResult.BunqError -> {
-                    Log.d("test", "text")
+        if (bunqPreferences.getString(Constants.Preferences.SESSION_TOKEN).isEmpty()) {
+            val key = generatePublicKey()
+            bunqPreferences.putString(Constants.Preferences.PUBLIC_KEY, key)
+            apiRepository.installation(key).collect {
+                when (it) {
+                    is BunqResult.BunqError -> {
+                        Log.d("test", "text")
 
-                }
-                is BunqResult.BunqResponse -> {
-                    it.response?.getToken()?.let { token ->
-                        bunqPreferences.putString(
-                            Constants.Preferences.SESSION_TOKEN,
-                            token
-                        )
-                        registerDevice()
+                    }
+                    is BunqResult.BunqResponse -> {
+                        it.response?.getToken()?.let { token ->
+                            bunqPreferences.putString(
+                                Constants.Preferences.SESSION_TOKEN,
+                                token
+                            )
+                            registerDevice()
+                        }
+                    }
+                    is BunqResult.Error -> {
+                        Log.d("test", "text")
+
+                    }
+                    is BunqResult.Loading -> {
+                        Log.d("test", "text")
+
                     }
                 }
-                is BunqResult.Error -> {
-                    Log.d("test", "text")
-
-                }
-                is BunqResult.Loading -> {
-                    Log.d("test", "text")
-
-                }
             }
+        } else {
+            shouldFetchList.value = true
         }
 
     }
@@ -150,6 +164,7 @@ class MainViewModel @Inject constructor(
                             Constants.Preferences.MONETARY_ACCOUNT_ID,
                             it.response?.getFirstAccountID() ?: ""
                         )
+                        shouldFetchList.value = true
                     }
                     is BunqResult.Error -> {
                         Log.d("GetMonetaryAccount", "Error")
