@@ -59,7 +59,20 @@ data class Payment(
     val balanceAfterMutation: BalanceAfterMutation? = null,
     @SerializedName("payment_auto_allocate_instance")
     val paymentAutoAllocateInstance: Any? = null
-)
+) {
+    fun getPersonWhoPaid(): String {
+        return if (subType == "REQUEST") {
+            "From: ${counterpartyAlias?.displayName}"
+        } else {
+            "To: ${alias?.displayName}"
+        }
+    }
+
+    fun getPaymentDescription(): String {
+        return "${amount?.value ?: ""} ${amount?.currency ?: ""}"
+    }
+}
+
 
 data class Amount(
     @SerializedName("currency")
