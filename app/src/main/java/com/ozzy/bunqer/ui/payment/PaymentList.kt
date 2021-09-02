@@ -48,7 +48,8 @@ fun PaymentList() {
         state = rememberSwipeRefreshState(isRefreshing.value),
         onRefresh = {
             payments.refresh()
-        }
+        },
+        modifier = Modifier.fillMaxWidth()
     ) {
         LazyColumn(
             Modifier.fillMaxWidth().padding(5.dp),
@@ -57,6 +58,11 @@ fun PaymentList() {
             stickyHeader {
                 SugarDaddyCaller {
                     viewModel.callSugarDaddy()
+                }
+            }
+            stickyHeader {
+                Button({ payments.refresh() }) {
+                    Text("Refresh")
                 }
             }
             items(payments) { payment ->

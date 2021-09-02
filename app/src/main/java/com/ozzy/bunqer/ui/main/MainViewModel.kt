@@ -10,6 +10,7 @@ import com.ozzy.bunqer.data.model.request.RegisterDeviceRequest
 import com.ozzy.bunqer.data.model.request.SessionRequest
 import com.ozzy.bunqer.di.BunqPreferences
 import com.ozzy.bunqer.util.Constants
+import com.ozzy.bunqer.util.KeySingleton
 import com.ozzy.bunqer.util.extension.generatePublicKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -61,7 +62,7 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun installation() {
-        if (bunqPreferences.getString(Constants.Preferences.SESSION_TOKEN).isEmpty()) {
+        KeySingleton.newInstance()
             val key = generatePublicKey()
             bunqPreferences.putString(Constants.Preferences.PUBLIC_KEY, key)
             apiRepository.installation(key).collect {
@@ -89,9 +90,7 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
-        } else {
-            shouldFetchList.value = true
-        }
+
 
     }
 
@@ -103,7 +102,11 @@ class MainViewModel @Inject constructor(
         apiRepository.registerDevice(requestBody).collect {
             when (it) {
                 is BunqResult.BunqError -> {
-                    Log.d("test", "text")
+                    bunqPreferences.putString(
+                        Constants.Preferences.API_KEY,
+                        ""
+                    )
+                    installation()
                 }
                 is BunqResult.BunqResponse -> {
                     startSession()

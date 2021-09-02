@@ -12,10 +12,14 @@ object KeySingleton {
 
     fun getInstance(): KeyPair {
         if (keyPair == null) {
-            val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-            keyPairGenerator.initialize(2048)
-            keyPair = keyPairGenerator.genKeyPair()
+            newInstance()
         }
         return keyPair!!
+    }
+
+    fun newInstance() {
+        val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
+        keyPairGenerator.initialize(2048)
+        keyPair = keyPairGenerator.genKeyPair()
     }
 }
