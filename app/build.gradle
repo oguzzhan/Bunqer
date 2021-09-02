@@ -87,6 +87,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
     implementation "androidx.paging:paging-compose:1.0.0-alpha12"
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha07"
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha08"
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
 }
