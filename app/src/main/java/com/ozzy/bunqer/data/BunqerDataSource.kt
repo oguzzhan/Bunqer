@@ -2,6 +2,7 @@ package com.ozzy.bunqer.data
 
 import com.ozzy.bunqer.data.model.request.InstallationRequest
 import com.ozzy.bunqer.data.model.request.RegisterDeviceRequest
+import com.ozzy.bunqer.data.model.request.RequestInquiryRequest
 import com.ozzy.bunqer.data.model.request.SessionRequest
 import javax.inject.Inject
 
@@ -27,8 +28,12 @@ class BunqerDataSource @Inject constructor(private val bunqerService: BunqerServ
     suspend fun getMonetaryAccounts(userId: String) = bunqerService.getMonetaryAccounts(userId)
 
     //</editor-fold>
-    suspend fun getPayments(userId: String, accountId: String) =
-        bunqerService.getPayments(userId, accountId)
+    suspend fun requestInquiry(
+        userId: String,
+        accountId: String,
+        requestBody: RequestInquiryRequest
+    ) =
+        bunqerService.requestInquiry(userId, accountId, requestBody)
     //<editor-fold desc="Payment and Monetary Accounts">
     //</editor-fold>
 }

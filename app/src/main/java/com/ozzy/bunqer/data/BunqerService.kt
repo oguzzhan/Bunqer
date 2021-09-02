@@ -2,13 +2,11 @@ package com.ozzy.bunqer.data
 
 import com.ozzy.bunqer.data.model.request.InstallationRequest
 import com.ozzy.bunqer.data.model.request.RegisterDeviceRequest
+import com.ozzy.bunqer.data.model.request.RequestInquiryRequest
 import com.ozzy.bunqer.data.model.request.SessionRequest
 import com.ozzy.bunqer.data.model.response.*
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 /**
  * Created by Oğuzhan Karacan on 30.08.2021.
@@ -38,4 +36,11 @@ interface BunqerService {
         @Path("monetary_account_id") monetaryAccountId: String,
         @Query("newer_id") newerId: String?,
     ): Response<PaymentListResponse>
+
+    @POST("user/{user_id}/monetary-account/{monetary_account_id}/request-inquiry")
+    suspend fun requestInquiry(
+        @Path("user_id") userId: String,
+        @Path("monetary_account_id") monetaryAccountId: String,
+        @Body requestBody: RequestInquiryRequest
+    ): Response<RequestInquiryResponse>
 }
