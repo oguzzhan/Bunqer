@@ -26,10 +26,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         viewModel.createUser()
         viewModel.shouldFetchList.observe(this) {
-            setContent {
-                BunqerTheme {
-                    // A surface container using the 'background' color from the theme
-                    BunqerNavigationApp()
+            if (it) {
+                setContent {
+                    BunqerTheme {
+                        // A surface container using the 'background' color from the theme
+                        BunqerNavigationApp()
+                    }
                 }
             }
         }

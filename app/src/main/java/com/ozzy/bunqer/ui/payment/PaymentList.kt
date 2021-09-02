@@ -47,7 +47,7 @@ fun PaymentList(
 
     //payment paging list
     val viewModel: PaymentViewModel = hiltViewModel()
-    val payments = viewModel.getPaymentList().collectAsLazyPagingItems()
+    val payments = viewModel.paymentList.collectAsLazyPagingItems()
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing.value),
         onRefresh = {
