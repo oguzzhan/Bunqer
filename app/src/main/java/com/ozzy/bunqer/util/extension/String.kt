@@ -1,6 +1,8 @@
 package com.ozzy.bunqer.util.extension
 
+import android.net.UrlQuerySanitizer
 import android.util.Base64
+import com.ozzy.bunqer.util.Constants
 import com.ozzy.bunqer.util.KeySingleton
 import java.security.KeyFactory
 import java.security.Signature
@@ -30,5 +32,13 @@ private fun signSHA256RSA(input: String, strPk: String): String? {
     privateSignature.update(input.toByteArray(charset("UTF-8")))
     val s = privateSignature.sign()
     return Base64.encodeToString(s, Base64.NO_WRAP)
+}
+
+fun String.getNewerId(): String {
+    return UrlQuerySanitizer(this).getValue(Constants.Network.NEWER_ID)
+}
+
+fun String.getOlderId(): String {
+    return UrlQuerySanitizer(this).getValue(Constants.Network.OLDER_ID)
 }
 

@@ -35,6 +35,7 @@ interface BunqerService {
     @GET("user/{user_id}/monetary-account/{monetary_account_id}/payment")
     suspend fun getPayments(
         @Path("user_id") userId: String,
-        @Path("monetary_account_id") monetaryAccountId: String
+        @Path("monetary_account_id") monetaryAccountId: String,
+        @Query("newer_id") newerId: String?,
     ): Response<PaymentListResponse>
 }
