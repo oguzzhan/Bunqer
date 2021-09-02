@@ -64,7 +64,7 @@ data class Payment(
         return if (subType == "REQUEST") {
             "From: ${counterpartyAlias?.displayName}"
         } else {
-            "To: ${alias?.displayName}"
+            "To: ${counterpartyAlias?.displayName}"
         }
     }
 
