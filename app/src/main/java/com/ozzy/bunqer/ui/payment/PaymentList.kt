@@ -1,12 +1,12 @@
 package com.ozzy.bunqer.ui.payment
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -35,9 +36,12 @@ import com.ozzy.bunqer.ui.common.LoadingView
 /**
  * Created by Oğuzhan Karacan on 1.09.2021.
  */
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun PaymentList() {
+fun PaymentList(
+    navController: NavController
+) {
 
     val isRefreshing = remember { mutableStateOf(false) }
 
@@ -56,17 +60,28 @@ fun PaymentList() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             stickyHeader {
-                SugarDaddyCaller {
-                    viewModel.callSugarDaddy()
-                }
-            }
-            stickyHeader {
-                Button({ payments.refresh() }) {
-                    Text("Refresh")
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    SugarDaddyCaller {
+                        viewModel.callSugarDaddy()
+                    }
+                    Button({ payments.refresh() }) {
+                        Text("Refresh")
+                    }
+                    Button({ navController.navigate("payment") }) {
+                        Text("Make a payment")
+                    }
                 }
             }
             items(payments) { payment ->
-                PaymentRow(payment?.payment)
+                PaymentRow(
+                    payment?.payment
+                ) {
+                    Log.d("messaage", "go to detail")
+                }
             }
 
             payments.apply {
@@ -97,16 +112,19 @@ fun PaymentList() {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 @Preview(showBackground = true)
 fun PaymentRow(
-    @PreviewParameter(PaymentPreviewParameterProvider::class) payment: Payment?
+    @PreviewParameter(PaymentPreviewParameterProvider::class) payment: Payment?,
+    onClick: () -> Unit = { }
 ) {
     Card(
         modifier = Modifier
             .height(150.dp)
             .padding(20.dp)
             .fillMaxWidth(),
+        onClick = onClick
     ) {
 
         ConstraintLayout {
