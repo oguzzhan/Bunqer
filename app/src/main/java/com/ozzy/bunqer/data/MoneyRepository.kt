@@ -2,6 +2,7 @@ package com.ozzy.bunqer.data
 
 import com.ozzy.bunqer.data.model.BunqResult
 import com.ozzy.bunqer.data.model.request.RequestInquiryRequest
+import com.ozzy.bunqer.data.model.response.IdResponse
 import com.ozzy.bunqer.data.model.response.RequestInquiryResponse
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
@@ -20,6 +21,23 @@ class MoneyRepository @Inject constructor(private val dataSource: BunqerDataSour
         return object : NetworkBoundRepository<RequestInquiryResponse>() {
             override suspend fun fetchFromRemote(): Response<RequestInquiryResponse> {
                 return dataSource.requestInquiry(
+                    userId,
+                    accountId,
+                    requestInquiryRequest
+                )
+            }
+
+        }.asFlow()
+    }
+
+    fun makePayment(
+        userId: String,
+        accountId: String,
+        requestInquiryRequest: RequestInquiryRequest
+    ): Flow<BunqResult<IdResponse?>> {
+        return object : NetworkBoundRepository<IdResponse>() {
+            override suspend fun fetchFromRemote(): Response<IdResponse> {
+                return dataSource.makePayment(
                     userId,
                     accountId,
                     requestInquiryRequest

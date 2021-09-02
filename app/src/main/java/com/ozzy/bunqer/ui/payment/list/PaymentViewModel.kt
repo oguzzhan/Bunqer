@@ -23,7 +23,7 @@ import javax.inject.Inject
  * Created by Oğuzhan Karacan on 1.09.2021.
  */
 @HiltViewModel
-class PaymentListViewModel @Inject constructor(
+class PaymentViewModel @Inject constructor(
     private val moneyRepository: MoneyRepository,
     private val bunqPreferences: BunqPreferences,
     private val bunqerService: BunqerService
@@ -79,4 +79,42 @@ class PaymentListViewModel @Inject constructor(
         )
     }.flow.cachedIn(viewModelScope)
 
+    fun makePayment(amount: String, successCallback: () -> Unit) {
+        val makePaymentRequest = RequestInquiryRequest(
+            amount = AmountInquired(
+                value = amount,
+                currency = "EUR"
+            ),
+            counterpartyAlias = CounterpartyAlias(
+                type = "EMAIL",
+                value = "sugardaddy@bunq.com",
+                name = "Sugar Daddy"
+            ),
+            description = "Giving money!",
+            allowBunqme = null
+        )
+
+        viewModelScope.launch {
+            moneyRepository.makePayment(
+                bunqPreferences.getString(Constants.Preferences.USER_ID),
+                bunqPreferences.getString(Constants.Preferences.MONETARY_ACCOUNT_ID),
+                makePaymentRequest
+            ).collect {
+                when (it) {
+                    is BunqResult.BunqError -> {
+
+                    }
+                    is BunqResult.BunqResponse -> {
+                        successCallback()
+                    }
+                    is BunqResult.Error -> {
+
+                    }
+                    is BunqResult.Loading -> {
+
+                    }
+                }
+            }
+        }
+    }
 }

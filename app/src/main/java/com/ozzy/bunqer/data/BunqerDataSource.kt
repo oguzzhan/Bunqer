@@ -26,14 +26,20 @@ class BunqerDataSource @Inject constructor(private val bunqerService: BunqerServ
         bunqerService.startSession(requestBody)
 
     suspend fun getMonetaryAccounts(userId: String) = bunqerService.getMonetaryAccounts(userId)
-
     //</editor-fold>
+
+    //<editor-fold desc="Payment">
     suspend fun requestInquiry(
         userId: String,
         accountId: String,
         requestBody: RequestInquiryRequest
     ) =
         bunqerService.requestInquiry(userId, accountId, requestBody)
-    //<editor-fold desc="Payment and Monetary Accounts">
+
+    suspend fun makePayment(
+        userId: String,
+        accountId: String,
+        requestBody: RequestInquiryRequest
+    ) = bunqerService.makePayment(userId, accountId, requestBody)
     //</editor-fold>
 }

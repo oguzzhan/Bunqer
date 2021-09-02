@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName
 data class RequestInquiryRequest(
     @SerializedName("amount_inquired")
     val amountInquired: AmountInquired? = null,
+    @SerializedName("amount")
+    val amount: AmountInquired? = null,
     @SerializedName("counterparty_alias")
     val counterpartyAlias: CounterpartyAlias? = null,
     @SerializedName("description")

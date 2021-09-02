@@ -19,7 +19,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -40,14 +39,14 @@ import com.ozzy.bunqer.ui.common.LoadingView
 @ExperimentalFoundationApi
 @Composable
 fun PaymentList(
-    navController: NavController
+    navController: NavController,
+    viewModel: PaymentViewModel
 ) {
 
     val isRefreshing = remember { mutableStateOf(false) }
 
     //payment paging list
-    val listViewModel: PaymentListViewModel = hiltViewModel()
-    val payments = listViewModel.paymentList.collectAsLazyPagingItems()
+    val payments = viewModel.paymentList.collectAsLazyPagingItems()
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing.value),
         onRefresh = {
@@ -66,7 +65,7 @@ fun PaymentList(
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     SugarDaddyCaller {
-                        listViewModel.callSugarDaddy()
+                        viewModel.callSugarDaddy()
                     }
                     Button({ payments.refresh() }) {
                         Text("Refresh")

@@ -37,6 +37,13 @@ interface BunqerService {
         @Query("older_id") olderId: String?,
     ): Response<PaymentListResponse>
 
+    @POST("user/{user_id}/monetary-account/{monetary_account_id}/payment")
+    suspend fun makePayment(
+        @Path("user_id") userId: String,
+        @Path("monetary_account_id") monetaryAccountId: String,
+        @Body requestBody: RequestInquiryRequest
+    ): Response<IdResponse>
+
     @POST("user/{user_id}/monetary-account/{monetary_account_id}/request-inquiry")
     suspend fun requestInquiry(
         @Path("user_id") userId: String,
