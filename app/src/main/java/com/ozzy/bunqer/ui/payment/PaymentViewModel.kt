@@ -72,18 +72,15 @@ class PaymentViewModel @Inject constructor(
         }
     }
 
-
     fun getPaymentList(): Flow<PagingData<PaymentResponse>> {
-        val source = PaymentsPagingSource(
-            bunqPreferences.getString(Constants.Preferences.USER_ID),
-            bunqPreferences.getString(Constants.Preferences.MONETARY_ACCOUNT_ID),
-            bunqerService
-        )
-
         return Pager(
             PagingConfig(pageSize = 10)
         ) {
-            source
+            PaymentsPagingSource(
+                bunqPreferences.getString(Constants.Preferences.USER_ID),
+                bunqPreferences.getString(Constants.Preferences.MONETARY_ACCOUNT_ID),
+                bunqerService
+            )
         }.flow.cachedIn(viewModelScope)
     }
 

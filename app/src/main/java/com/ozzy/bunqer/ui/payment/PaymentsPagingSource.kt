@@ -16,12 +16,6 @@ class PaymentsPagingSource(
 ) :
     PagingSource<String, PaymentResponse>() {
 
-    override val keyReuseSupported: Boolean
-        get() = true
-
-    override fun getRefreshKey(state: PagingState<String, PaymentResponse>): String? {
-        return null
-    }
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, PaymentResponse> {
         return try {
@@ -36,4 +30,11 @@ class PaymentsPagingSource(
             LoadResult.Error(e)
         }
     }
+
+    override fun getRefreshKey(state: PagingState<String, PaymentResponse>): String? {
+        return null
+    }
+
+    override val keyReuseSupported: Boolean
+        get() = true
 }
