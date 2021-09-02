@@ -1,4 +1,4 @@
-package com.ozzy.bunqer.ui.payment
+package com.ozzy.bunqer.ui.payment.list
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -46,8 +46,8 @@ fun PaymentList(
     val isRefreshing = remember { mutableStateOf(false) }
 
     //payment paging list
-    val viewModel: PaymentViewModel = hiltViewModel()
-    val payments = viewModel.paymentList.collectAsLazyPagingItems()
+    val listViewModel: PaymentListViewModel = hiltViewModel()
+    val payments = listViewModel.paymentList.collectAsLazyPagingItems()
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing.value),
         onRefresh = {
@@ -66,7 +66,7 @@ fun PaymentList(
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     SugarDaddyCaller {
-                        viewModel.callSugarDaddy()
+                        listViewModel.callSugarDaddy()
                     }
                     Button({ payments.refresh() }) {
                         Text("Refresh")

@@ -1,4 +1,4 @@
-package com.ozzy.bunqer.ui.payment
+package com.ozzy.bunqer.ui.payment.list
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

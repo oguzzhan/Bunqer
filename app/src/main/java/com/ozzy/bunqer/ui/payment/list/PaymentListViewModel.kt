@@ -1,4 +1,4 @@
-package com.ozzy.bunqer.ui.payment
+package com.ozzy.bunqer.ui.payment.list
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -23,7 +23,7 @@ import javax.inject.Inject
  * Created by Oğuzhan Karacan on 1.09.2021.
  */
 @HiltViewModel
-class PaymentViewModel @Inject constructor(
+class PaymentListViewModel @Inject constructor(
     private val moneyRepository: MoneyRepository,
     private val bunqPreferences: BunqPreferences,
     private val bunqerService: BunqerService
