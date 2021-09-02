@@ -20,7 +20,7 @@ interface BunqerService {
     suspend fun installation(@Body requestBody: InstallationRequest): Response<InstallationResponse>
 
     @POST("device-server")
-    suspend fun registerDevice(@Body requestBody: RegisterDeviceRequest): Response<RegisterDeviceResponse>
+    suspend fun registerDevice(@Body requestBody: RegisterDeviceRequest): Response<IdResponse>
 
     @POST("session-server")
     suspend fun startSession(@Body requestBody: SessionRequest): Response<SessionResponse>

@@ -30,9 +30,9 @@ class ApiRepository @Inject constructor(private val dataSource: BunqerDataSource
         }.asFlow()
     }
 
-    fun registerDevice(requestBody: RegisterDeviceRequest): Flow<BunqResult<RegisterDeviceResponse?>> {
-        return object : NetworkBoundRepository<RegisterDeviceResponse>() {
-            override suspend fun fetchFromRemote(): Response<RegisterDeviceResponse> {
+    fun registerDevice(requestBody: RegisterDeviceRequest): Flow<BunqResult<IdResponse?>> {
+        return object : NetworkBoundRepository<IdResponse>() {
+            override suspend fun fetchFromRemote(): Response<IdResponse> {
                 return dataSource.registerDevice(requestBody)
             }
 
